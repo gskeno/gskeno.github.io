@@ -27,10 +27,7 @@ ol, ul {
 table {
   border-collapse: separate;
   border-spacing: 0;
-  vertical-align: middle;
-  color:#2b0505;
-  background-color:#d8d4d4;;
-  font-size: .9em
+  vertical-align: middle
 }
 
 caption, th, td {
@@ -78,14 +75,13 @@ a img {
 
 * {
   -webkit-margin-before: 0;
-  -webkit-margin-after: 0;
-  border-radius:5px
+  -webkit-margin-after: 0
 }
 
 body {
   background: #ddd;
-  font-family: "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Source Han Sans", "WenQuanYi Micro Hei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 85%;
+  font-family: "Helvetica Neue", "Helvetica", "Microsoft YaHei", "WenQuanYi Micro Hei", Arial, sans-serif;
+  font-size: 100%;
   color: #817c7c;
   line-height: 1.5
 }
@@ -949,8 +945,7 @@ header nav ul li a:hover {
 }
 
 .post a, .page a, .link a, .photo a {
-  /*color: {{ site.colors.primary }};*/
-  color: #0f66dc
+  color: {{ site.colors.primary }};
 }
 
 .post a:hover, .page a:hover, .link a:hover, .photo a:hover {
@@ -1020,8 +1015,7 @@ article header.article-info>p.article-time:before {
 
 article .article-content {
   padding: 1.5em 4%;
-  /*color: #413f3f;*/
-  color: #000000;    /*modified by ivanzz1001 20190724*/
+  color: #413f3f;
   font-size: 100%;
 }
 
@@ -1061,23 +1055,9 @@ article .article-content h3 {
   margin-top: 1.3em
 }
 
-/* modified by ivanzz1001 2019-7-24*/
-/*
 article .article-content h4, article .article-content h5, article .article-content h6 {
   font-size: 140%
 }
-*/
-article .article-content h4, article .article-content h5 {
-  font-size: 140%
-}
-
-article .article-content h6 {
-	font-size: 125%;
-	font-weight: bold;
-	margin-top: 1.3em;
-	margin-bottom: 1.3em
-}
-
 
 article .article-content h1, article .article-content h2, article .article-content h3, article .article-content h4, article .article-content h5, article .article-content h6 {
   color: #333;
@@ -1130,8 +1110,7 @@ article .article-content blockquote cite {
 article .article-content ul, article .article-content ol {
   padding-left: 1.5em;
   font-size: 100%;
-  /*padding-top: .1em;*/
-  padding-top: .6em;             /*modified 2022-1-4*/
+  padding-top: .7em;
 }
 
 @media only screen and (min-width:768px) {
@@ -1154,14 +1133,13 @@ article .article-content dl dt {
 }
 
 article .article-content ul li>code, article .article-content ol li>code, article .article-content p code, article .article-content strong code, article .article-content em code, article .article-content table th>code, article .article-content table td>code {
-  font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-family: Monaco, Menlo, Consolas, Courier New, monospace;
   background: #eee;
   color: #d14;
   border: 1px solid #d6d6d6;
   padding: 0 5px;
   margin: 0 2px;
   font-size: 90%;
-  font-weight: bold;
   white-space: nowrap;
   text-shadow: 0 1px #fff;
   -webkit-border-radius: .25em;
@@ -1170,7 +1148,7 @@ article .article-content ul li>code, article .article-content ol li>code, articl
 }
 
 article .article-content p {
-  line-height: 1.8;
+  line-height: 1.5;
   margin-top: .7em;
 }
 
@@ -2258,10 +2236,8 @@ footer {
   font-family: "covered_by_your_graceregular";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /*font-size: 150%;*/
-  font-size: 100%;
-  /*line-height: 1.3em;*/
-  line-height: 1.8em;
+  font-size: 150%;
+  line-height: 1.3em;
   width: 90%;
   margin: 0 auto;
   color: #fff;
@@ -2416,23 +2392,21 @@ footer {
 }
 
 .article-content pre, .article-content .highlight, .article-content .highlight pre {
-  /*ivanzz1001: background: #2d2d2d;*/
-  background: #2d5163;
+  background: #2d2d2d;
   margin: .5em 0;
   padding: .5em 2%;
-  color: #aaaaaa;
-  line-height: 1.7;
+  color: #ccc;
+  line-height: 1.5;
   font-size: .8em;
   -webkit-border-radius: .35em;
   -webkit-border-radius: .35em;
   border-radius: .35em;
   word-wrap: break-word;
-  overflow: auto
 }
 
 @media only screen and (min-width:568px) {
   .article-content pre, .article-content .highlight, .article-content .highlight pre {
-    font-size: 1em
+    font-size: .9em
   }
 }
 
@@ -2449,19 +2423,9 @@ footer {
 }
 
 .article-content pre {
-  font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  background: #2d2e2e;
-  color: #aaaaaa;
+  font-family: Monaco, Menlo, Consolas, Courier New, monospace;
+  background: #f5f5f5;
   border: 1px solid #ccc;
-}
-
-.article-content pre::-webkit-scrollbar {
-	width: 4px;    
-	height: 4px;
-}
-
-.article-content pre::-webkit-scrollbar-thumb {
-	background: #605f5a;
 }
 
 .article-content pre code {
