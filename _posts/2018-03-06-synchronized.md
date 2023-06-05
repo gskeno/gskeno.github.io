@@ -98,7 +98,7 @@ leader节点崩溃，需要再次取选取leader节点。
 当线程进入同步代码块的时候，如果此同步对象(锁对象)没有被锁定，那么虚拟机首先会在`当前线程的栈中创建Lock Record(锁记录)`，用于
 存储锁对象的Mark Word的拷贝。
 
-当线程能成功获取到synchronized的对象锁时, MarkWord锁标示位为10，指针指向监视器对象ObjectMonitor。
+当线程能成功获取到synchronized的对象锁时, 且MarkWord锁标示位为10时，指针指向监视器对象ObjectMonitor。
 <img  src="/assets/img/synchronized-relation.png" width="500"/>
 
 对象监视器(ObjectMonitor)在锁竞争情况下的状态转换示意如下
@@ -113,4 +113,6 @@ leader节点崩溃，需要再次取选取leader节点。
 参考
 
 1. [Java面试一站到底]()
-2. [synchronized对象头结构](https://www.cnblogs.com/xiaofuge/p/13895226.html)
+2. [深入理解Java虚拟机]()
+3. [synchronized对象头结构](https://www.cnblogs.com/xiaofuge/p/13895226.html)
+4. [objectMonitor.hpp](https://github.com/gskeno/jdk/blob/master/src/hotspot/share/runtime/objectMonitor.hpp)
