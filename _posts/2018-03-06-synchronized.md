@@ -91,15 +91,34 @@ leader节点崩溃，需要再次取选取leader节点。
 以上代码，多个线程都会在该方法上阻塞住，直至某个线程中，learner与leader连接成功后，达到过半要求，所有线程才会从方法返回。
 
 ## 原理
+### 对象头
 每个Java对象，都有一个与之关联的监视器(Monitor)对象。
 解释: JVM中的对象内存布局可以分为以下3块区域, 对象头`[MarkWord, Klass Pointer, ArrayLength(可选)]`，`示例数据[Instance Data]`，`对齐填充[Padding]`。
 <img src="/assets/img/synchronized-markword.png" width="500"/>
 
-当线程进入同步代码块的时候，如果此同步对象(锁对象)没有被锁定，那么虚拟机首先会在`当前线程的栈中创建Lock Record(锁记录)`，用于
-存储锁对象的Mark Word的拷贝。
+### 偏向锁
+biased lock，当虚拟机启用偏向锁且锁对象第一次被线程获取的时候，虚拟机将会把对象头中的标志位设为`01`，即偏向模式。
 
-当线程能成功获取到synchronized的对象锁时, 且MarkWord锁标示位为10时，指针指向监视器对象ObjectMonitor。
-<img  src="/assets/img/synchronized-relation.png" width="500"/>
+同时使用CAS操作把`获取到这个锁的线程的ID记录在对象的Mark Word`之中,如果CAS操作成功，持有偏向锁的线程以后每次进入这个锁相关的同步块时，虚拟机都可以不再进行任何同步操作。
+
+当有另外一个线程去尝试获取这个锁时，`偏向模式就宣告结束`。根据锁对象目前是否处于被锁定的状态，撤销偏向（`Revoke Bias`）后恢复到未锁定（标志位为`01`）或轻量级锁定（标志位为`00`）的状态。
+
+![](/assets/img/synchronized-markword-transfer.gif)
+
+### 轻量级锁
+接着看上一个图，如果在另一个线程B获取锁时，持有锁的线程A还没有释放锁，偏向锁会升级为轻量级锁。
+
+虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（`Lock Record`）的空间，用于存储锁对象目前的Mark Word的拷贝（官方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word）
+
+然后，虚拟机将使用CAS操作尝试将对象的`Mark Word更新为指向Lock Record的指针`。如果这个更新动作成功了，那么这个线程就拥有了该对象的锁，并且对象Mark Word的锁标志位（Mark Word的最后2bit）将转变为`00`，即表示此对象处于轻量级锁定状态。
+
+如果这个更新操作失败了，虚拟机首先会`检查对象的Mark Word是否指向当前线程的栈帧`，如果只说明当前线程已经拥有了这个对象的锁，那就可以直接进入同步块继续执行，否则说明这个锁对象已经被其他线程抢占了。如果有两条以上的线程争用同一个锁，那轻量级锁就不再有效，要`膨胀(inflate)为重量级锁`，锁标志的状态值变为`10`，`Mark Word中存储的就是指向重量级锁（互斥量）的指针`，后面等待锁的线程也要进入阻塞状态。
+
+### 重量级锁
+synchronized重量级是通过对象内部的一个Monitor（监视器）来实现的。Monitor本质是依赖于底层的操作系统的Mutex Lock来实现的。
+
+通过操作系统实现线程之间的切换和调用需要从用户态转换到内核态，这个成本非常高，状态之间的转换需要相对比较长的时间，这就是synchronized在低版本JDK中效率低的原因。因此，这种依赖于操作系统Mutex Lock所实现的锁通常称为重量级锁。
+
 
 对象监视器(ObjectMonitor)在锁竞争情况下的状态转换示意如下
 - 未获取到锁的线程，进入到_EntryList队列中等待获取到锁。
@@ -107,8 +126,9 @@ leader节点崩溃，需要再次取选取leader节点。
 - 获取到锁的线程，wait后释放锁，进入_WaitSet集合被唤醒。
   <img alt="线程进入synchronized状态转换示意图" src="/assets/img/synchronized-state-transfer.png" width="500"/>
 
-## 目录
-
+## 总结
+- synchronized的优化目的，是尽可能低成本的实现多线程之间同步操作。
+- 锁只可以升级(偏向锁->轻量级锁->重量级锁)，不可以降级。
 
 参考
 
@@ -116,3 +136,4 @@ leader节点崩溃，需要再次取选取leader节点。
 2. [深入理解Java虚拟机]()
 3. [synchronized对象头结构](https://www.cnblogs.com/xiaofuge/p/13895226.html)
 4. [objectMonitor.hpp](https://github.com/gskeno/jdk/blob/master/src/hotspot/share/runtime/objectMonitor.hpp)
+5. [synchronization openjdk wiki](https://wiki.openjdk.org/display/HotSpot/Synchronization)
