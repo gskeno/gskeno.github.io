@@ -90,6 +90,78 @@ leader节点崩溃，需要再次取选取leader节点。
 ```
 以上代码，多个线程都会在该方法上阻塞住，直至某个线程中，learner与leader连接成功后，达到过半要求，所有线程才会从方法返回。
 
+### ForkJoinTask的完成
+`ForkJoin`框架中，每个任务都是一个`ForkJoinTask`。线程1执行大任务`1+...+4`A依赖于小任务`1+2`B的完成，小任务B可能是被线程1执行，也可能被线程2执行。
+
+当任务B被线程2执行的时候，线程1需要等待，直到线程2完成任务B并唤醒所有等待任务B的线程。
+这种场景下，任务B就是一个`同步对象`
+```java
+ForkJoinTask.java
+    /**
+     * If not done, sets SIGNAL status and performs Object.wait(timeout).
+     * This task may or may not be done on exit. Ignores interrupts.
+     * 
+     * @param timeout using Object.wait conventions.
+     */
+    final void internalWait(long timeout) {
+        int s;
+        if ((s = status) >= 0 && // force completer to issue notify
+            U.compareAndSwapInt(this, STATUS, s, s | SIGNAL)) {
+            synchronized (this) {
+                if (status >= 0) // 类似于 线程1等待this(任务)完成并被唤醒
+                    try { wait(timeout); } catch (InterruptedException ie) { }
+                else
+                    notifyAll();
+            }
+        }
+    }
+
+
+    /**
+     * 类似于线程2完成任务B并唤醒等待在B上的线程1
+     * Primary execution method for stolen tasks. Unless done, calls
+     * exec and records status if completed, but doesn't wait for
+     * completion otherwise.
+     *
+     * @return status on exit from this method
+     */
+    final int doExec() {
+        int s; boolean completed;
+        if ((s = status) >= 0) {
+            try {
+                completed = exec();
+            } catch (Throwable rex) {
+                return setExceptionalCompletion(rex);
+            }
+            if (completed)
+                s = setCompletion(NORMAL);
+        }
+        return s;
+    }
+
+
+     /**
+     * Marks completion and wakes up threads waiting to join this
+     * task.
+     *
+     * @param completion one of NORMAL, CANCELLED, EXCEPTIONAL
+     * @return completion status on exit
+     */
+    private int setCompletion(int completion) {
+        for (int s;;) {
+            if ((s = status) < 0)
+                return s;
+            if (U.compareAndSwapInt(this, STATUS, s, s | completion)) {
+                if ((s >>> 16) != 0)
+                    synchronized (this) { notifyAll(); }
+                return completion;
+            }
+        }
+    }   
+
+```
+
+
 ## 原理
 ### 对象头
 每个Java对象，都有一个与之关联的监视器(Monitor)对象。
