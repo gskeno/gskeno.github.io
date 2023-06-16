@@ -237,7 +237,7 @@ public static void main(String[] args) throws IOException {
 - 2个细节
 > a,大小端序。 默认情况下，java生成的文件为大端序，而其他语言读取文件时，大多都是按照小端序来读取的，所以在序列化时，都有使用`reverseBytes`方法将字节序列转化为小端序，读取时也同样适用了`reverseBytes`方法。
 > 
-> b,offset header。序列化时，其可能占用了部分字节，存储了每个容器的位置，但是反序列化时，并没有利用到，而是直接跳过。`lemire`在他的文章中说是为了便于
+> b,offset header。序列化时，其可能占用了部分字节，存储了每个容器的位置，但是反序列化时，并没有利用到，而是直接跳过。[lemire](https://lemire.me/en/#about)在他的文章中说是为了便于
 > 随机访问任意一个container，但是当我们并不需要该功能时，这对于内存来说是一个浪费。
 
 
