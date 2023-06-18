@@ -7,7 +7,7 @@ categories: nio
 description: nio的Buffer api如何使用
 ---
 
-本文主要介绍Java NIO中Buffer API的适用方式，属于科普型介绍文章。
+本文主要介绍Java NIO中Buffer API的使用方式，属于科普型介绍文章。
 
 <!-- more -->
 
