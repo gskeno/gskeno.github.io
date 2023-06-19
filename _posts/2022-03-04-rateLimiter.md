@@ -110,7 +110,9 @@ description: RateLimiter的工作原理
 
 - 多个并发请求同时到达时，都会去尝试拿去令牌，则令牌的计数可能会有线程安全问题。acquire方法是阻塞方法，一定要拿到令牌，在计算获取令牌需要的等待时间时(内部会先读后写已存储的令牌数)，会加锁。
 
-
+- `漏桶算法`的限流原理是什么？业界有开源的技术实现方案吗？
+  
+- sentinel的限流原理是什么？(滑动窗口)
 
 
 
@@ -122,3 +124,7 @@ description: RateLimiter的工作原理
 - [令牌桶算法原理及应用](https://mp.weixin.qq.com/s/yk-b6JB-IC5G_MyDCf4Q8Q)
 - [逐行拆解Guava限流器RateLimiter](https://zhuanlan.zhihu.com/p/439682111?utm_id=0)
 - [uber-go 漏桶限流器](https://www.cyhone.com/articles/analysis-of-uber-go-ratelimit/)
+- [sentinel](https://sentinelguard.io/zh-cn/index.html)
+- [sentinel 滑动窗口](https://zhuanlan.zhihu.com/p/383064126)
+- [sentinel wiki](https://github.com/alibaba/Sentinel/wiki/Sentinel-%E6%A0%B8%E5%BF%83%E7%B1%BB%E8%A7%A3%E6%9E%90)
+
