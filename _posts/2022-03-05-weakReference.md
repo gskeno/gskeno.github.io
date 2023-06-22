@@ -3,6 +3,7 @@ layout: post
 title: 弱引用WeakReference
 tags:
 - java
+- guava
 categories: java
 description: WeakReference
 ---
