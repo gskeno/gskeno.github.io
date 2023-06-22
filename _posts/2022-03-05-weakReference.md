@@ -213,6 +213,58 @@ Entry节点在之后有另一个Entry节点作用在同一个segment上时将被
   无效的节点还未删除时，也会纳入统计
 
 
+guava cache中的一些核心代码片段如下
+```java
+  /**
+   * Gets the value from an entry. Returns null if the entry is invalid, partially-collected, 部分成员被垃圾回收
+   * loading, or expired. Unlike {@link Segment#getLiveValue} this method does not attempt to clean
+   * up stale entries. As such it should only be called outside a segment context, such as during
+   * iteration. 该方法不会清除陈旧的entry,只能在segment上下文外部调用，比如遍历cache场景
+   */
+  // LocalCache.getLiveValue()
+  @CheckForNull
+  V getLiveValue(ReferenceEntry<K, V> entry, long now) {
+    // key被弱引用时，GC后，key被回收，值为null
+    if (entry.getKey() == null) {
+      return null;
+    }
+    // value被弱引用时，GC后，value 被回收，值为null
+    V value = entry.getValueReference().get();
+    if (value == null) {
+      return null;
+    }
+
+    if (isExpired(entry, now)) {
+      return null;
+    }
+    return value;
+  }
+
+    /**
+     * Gets the value from an entry. Returns null if the entry is invalid, partially-collected,
+     * loading, or expired.
+     */
+    // Segment.getLiveValue 会清除内部无效Entry
+    V getLiveValue(ReferenceEntry<K, V> entry, long now) {
+      if (entry.getKey() == null) {
+        tryDrainReferenceQueues();
+        return null;
+      }
+      V value = entry.getValueReference().get();
+      if (value == null) {
+        tryDrainReferenceQueues();
+        return null;
+      }
+
+      if (map.isExpired(entry, now)) {
+        tryExpireEntries(now);
+        return null;
+      }
+      return value;
+    }
+
+```
+
 ## 总结
 
 - 当发生GC时，弱引用指向的原对象如果不再被其他对象所引用，则原对象会被垃圾回收。
