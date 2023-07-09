@@ -3,6 +3,7 @@ layout: post
 title: 字符串的排列
 tags:
 - Sliding_Window
+- Two_Pointers
 categories: leetcode
 description: 字符串的排列
 ---
