@@ -27,3 +27,4 @@ geo hash编码就能解决以上这两个问题，具体分析可见这篇博客
 - [Geo hash](https://www.cnblogs.com/muson/archive/2013/01/31/2883896.html)
 - [geohash-js](https://github.com/davetroy/geohash-js)
 - [lucene geohash 在外卖场景中，商家不规则多边形配送范围技术应用](https://www.exyb.cn/news/show-4617465.html?action=onClick)
+- [lucene javadoc](https://javadoc.io/doc/org.apache.lucene)
