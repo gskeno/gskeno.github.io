@@ -242,7 +242,7 @@ the: Unknown
 TokenStream: Noun
 API: Noun
 ```
-
+源码在[这里](https://github.com/gskeno/lucene/blob/branch_9_7_notes/lucene/analysis/common/src/test/org/apache/lucene/analysis/miscellaneous/PartOfSpeechAnalyzer.java)
 
 # 参考
 - [lucene 9.7 analysis](https://lucene.apache.org/core/9_7_0/core/org/apache/lucene/analysis/package-summary.html)
